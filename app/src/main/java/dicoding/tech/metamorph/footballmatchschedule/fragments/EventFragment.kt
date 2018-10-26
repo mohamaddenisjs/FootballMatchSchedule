@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import dicoding.tech.metamorph.footballmatchschedule.R
 import dicoding.tech.metamorph.footballmatchschedule.activities.EventDetailActivity
 import dicoding.tech.metamorph.footballmatchschedule.adapters.EventAdapter
+import dicoding.tech.metamorph.footballmatchschedule.api.ApiRepository
 import dicoding.tech.metamorph.footballmatchschedule.api.TheSportDBApi
 import dicoding.tech.metamorph.footballmatchschedule.model.EventItem
 import org.jetbrains.anko.*
@@ -21,7 +22,7 @@ import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.onRefresh
 import org.jetbrains.anko.support.v4.swipeRefreshLayout
 
-class EventFragment: Fragment(), EventView {
+class EventFragment: Fragment(), AnkoComponent<Context>, EventView {
     private var match: MutableList<EventItem> = mutableListOf()
     private lateinit var presenter: EventPresenter
     private lateinit var review: RecyclerView
@@ -42,23 +43,19 @@ class EventFragment: Fragment(), EventView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
-        val theSportDBApi = TheSportDBApi(leagueId)
-        val api = if(fixture ==1) theSportDBApi.getPrevSchdule() else theSportDBApi.getNextSchdule()
+        val request = ApiRepository()
         val gson = Gson()
-        presenter = EventPresenter(this, api, gson)
+        presenter = EventPresenter(this, request, gson, fixture)
         adapter = EventAdapter(match){
             ctx.startActivity<EventDetailActivity>("EVENT" to it)
         }
         review.adapter = adapter
 
         swipe.onRefresh {
-            //bar bar
-            presenter.getList()
+            presenter.getList(leagueId)
         }
-        //bar bar
 
-        presenter.getList()
+        presenter.getList(leagueId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -81,7 +78,7 @@ class EventFragment: Fragment(), EventView {
         adapter.notifyDataSetChanged()
     }
 
-    fun createView(ui: AnkoContext<Context>) = with(ui){
+    override fun createView(ui: AnkoContext<Context>) = with(ui){
         verticalLayout {
             lparams(width = matchParent, height = wrapContent)
             topPadding = dip(16)

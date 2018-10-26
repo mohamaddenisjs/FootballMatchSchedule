@@ -54,9 +54,13 @@ class EventDetailActivity: AppCompatActivity(), EventDetailView {
 
         favoriteState()
 
-        val apiMatchDetail = TheSportDBApi(event.eventId).getMatchDetail()
-        val apiHomeTeam = TheSportDBApi(event.homeTeamId).getTeamDetail()
-        val apiAwayTeam = TheSportDBApi(event.awayTeamId).getTeamDetail()
+//        val api = if (fixture == 1) TheSportDBApi.getPrevSchedule(id) else TheSportDBApi.getNextSchedule(id)
+
+//        val apiMatchDetail = TheSportDBApi(event.eventId).getMatchDetail()
+        val apiMatchDetail = TheSportDBApi.getMatchDetail(event.eventId)
+        val apiHomeTeam = TheSportDBApi.getTeamDetail(event.homeTeamId)
+//        val apiHomeTeam = TheSportDBApi(event.homeTeamId).getTeamDetail()
+        val apiAwayTeam = TheSportDBApi.getTeamDetail(event.awayTeamId)
         val gson = Gson()
         presenter = EventDetailPresenter(this, apiMatchDetail, apiHomeTeam, apiAwayTeam, gson)
         presenter.getEventDetail()

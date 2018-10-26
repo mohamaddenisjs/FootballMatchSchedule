@@ -1,22 +1,13 @@
 package dicoding.tech.metamorph.footballmatchschedule.api
 
-import android.net.Uri
 import dicoding.tech.metamorph.footballmatchschedule.BuildConfig
-import java.net.URL
-import java.security.cert.CertPath
 
-class TheSportDBApi(val id: String?){
-    private fun urlBuild(path: String?) = Uri.parse(BuildConfig.BASE_URL).buildUpon()
-            .appendPath("api")
-            .appendPath("v1")
-            .appendPath("json")
-            .appendPath(BuildConfig.TSDB_API_KEY)
-            .appendPath(path)
-            .appendQueryParameter("id", id)
-            .build().toString()
+object TheSportDBApi{
 
-    fun getPrevSchdule() = urlBuild("eventspastleague.php")
-    fun getNextSchdule() = urlBuild("eventsnextleague.php")
-    fun getMatchDetail() = urlBuild("lookupevent.php")
-    fun getTeamDetail() = urlBuild("lookupteam.php")
+    private fun urlBuild(path: String, id: String?) = BuildConfig.BASE_URL+"api/v1/json/"+BuildConfig.TSDB_API_KEY+"/"+path+"?id="+id
+
+    fun getPrevSchedule(id: String?) = urlBuild("eventspastleague.php", id)
+    fun getNextSchedule(id: String?) = urlBuild("eventsnextleague.php", id)
+    fun getMatchDetail(id: String?) = urlBuild("lookupevent.php", id)
+    fun getTeamDetail(id: String?) = urlBuild("lookupteam.php", id)
 }

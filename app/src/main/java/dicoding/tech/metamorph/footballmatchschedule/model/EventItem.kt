@@ -91,5 +91,4 @@ data class EventItem(
         var teamName: String? = null
 
 
-
 ) : Parcelable
